@@ -214,41 +214,36 @@ for df_data, table_name in [
 
 ### 8. Анализ данных с помощью SQL
 ```python
-# Пример аналитического запроса: треки с наибольшей энергией
+
 cursor.execute("""
-SELECT 
-    t.track_name, 
-    a.artist_name, 
-    tf.energy
-FROM 
-    Tracks t
-JOIN 
-    TrackArtists ta ON t.track_id = ta.track_id
-JOIN 
-    Artists a ON ta.artist_id = a.artist_id
-JOIN 
-    TrackFeatures tf ON t.track_id = tf.track_id
-ORDER BY 
-    tf.energy DESC
-LIMIT 10;
+SELECT distinct * 
+FROM tracks t
+LEFT JOIN albums ON albums.album_id = t.album_id
+left join languages l on l.language_id = t.language_id 
+left join trackfeatures t2 on t2.track_id =t.track_id 	
+left join trackartists t3 on t3.track_id = t.track_id 
+left join artists a on a.artist_id = t3.artist_id; 
 """)
 
+# Получение результатов
 results = cursor.fetchall()
+
+# Вывод результатов
 for row in results:
     print(row)
 ```
-| track_id                           | track_name                                      | year | popularity | time_signature | key | artist_id | artist_name          | album_id                        | acousticness | danceability | duration_ms | energy | instrumentalness | key | liveness | loudness | mode | speechiness | tempo   | valence |
-|------------------------------------|-------------------------------------------------|------|------------|----------------|-----|-----------|----------------------|---------------------------------|--------------|--------------|-------------|--------|------------------|-----|----------|----------|------|-------------|---------|---------|
-| 4lnM1EG3X9Hhy6YPdevwfd             | Style                                           | 2882 | 0          | 4.0            | 7   | 1023      | Silambarasan TR      | 4lnM1EG3X9Hhy6YPdevwfd          | None         | None         | 0.862       | 306933.0 | 0                | 5.0 | 0        | -5.766   | 1.0  | 0           | 131.974 | 131.974 |
-| 4lnM1EG3X9Hhy6YPdevwfd             | Style                                           | 2882 | 0          | 4.0            | 7   | 1158      | R. Jeyadev           | 4lnM1EG3X9Hhy6YPdevwfd          | None         | None         | 0.862       | 306933.0 | 0                | 5.0 | 0        | -5.766   | 1.0  | 0           | 131.974 | 131.974 |
-| 44AN5lGlVmjjF60C9TAn0V             | Style                                           | 4178 | 0          | 4.0            | 13  | 1023      | Silambarasan TR      | 44AN5lGlVmjjF60C9TAn0V          | None         | None         | 0.856       | 304987.0 | 0                | 5.0 | 0        | -6.194   | 1.0  | 0           | 131.962 | 131.962 |
-| 44AN5lGlVmjjF60C9TAn0V             | Style                                           | 4178 | 0          | 4.0            | 13  | 1158      | R. Jeyadev           | 44AN5lGlVmjjF60C9TAn0V          | None         | None         | 0.856       | 304987.0 | 0                | 5.0 | 0        | -6.194   | 1.0  | 0           | 131.962 | 131.962 |
-| 3YdYRU5yuwlNxcg0f5XFKS             | "Iravil Neruppu Theera (From ""QG"              | 19762| 0          | 4.0            | 39  | 8248      | Unknown Artist       | 3YdYRU5yuwlNxcg0f5XFKS          | None         | None         | 0.707       | 244615.0 | 0                | 2.0 | 0        | -8.238   | 1.0  | 0           | 129.973 | 129.973 |
-| 3UPXMzTROn8EJEMgJKjW9C             | "The Downeaster ""Alexa"" - Live at LA Sports Arena" | 14899| 0          | 4.0            | 34  | 6337      | Ted Elliot           | 3UPXMzTROn8EJEMgJKjW9C          | None         | None         | 0.337       | 302692.0 | 0                | 0.0 | 0        | -9.116   | 1.0  | 0           | 91.917  | 91.917  |
-| 1wKcyrLh63j1osrNb6rdzs             | Il Gladiatore                                   | 16155| 0          | 3.0            | 30  | 5293      | Joyal MJ             | 1wKcyrLh63j1osrNb6rdzs          | None         | None         | 0.192       | 243253.0 | 0                | 4.0 | 0        | -9.807   | 0.0  | 0           | 83.934  | 83.934  |
-| 1wKcyrLh63j1osrNb6rdzs             | Il Gladiatore                                   | 16155| 0          | 3.0            | 30  | 5323      | Jass Bajwa           | 1wKcyrLh63j1osrNb6rdzs          | None         | None         | 0.192       | 243253.0 | 0                | 4.0 | 0        | -9.807   | 0.0  | 0           | 83.934  | 83.934  |
-| 1wKcyrLh63j1osrNb6rdzs             | Il Gladiatore                                   | 16155| 0          | 3.0            | 30  | 6171      | Ensemble Appassionato| 1wKcyrLh63j1osrNb6rdzs          | None         | None         | 0.192       | 243253.0 | 0                | 4.0 | 0        | -9.807   | 0.0  | 0           | 83.934  | 83.934  |
-| 1wKcyrLh63j1osrNb6rdzs             | Il Gladiatore                                   | 16155| 0          | 3.0            | 30  | 6585      | DJ Shakira Valgy     | 1wKcyrLh63j1osrNb6rdzs          | None         | None         | 0.192       | 243253.0 | 0                | 4.0 | 0        | -9.807   | 0.0  | 0           | 83.934  | 83.934  |
+| track_id                           | track_name                      | album_id | duration_ms | track_url                                      | language_id | album_name                                      | artwork_url                                      | language_name | acousticness | danceability | energy | instrumentalness | key | liveness | loudness | mode | speechiness | tempo   | time_signature | valence | artist_name          |
+|------------------------------------|---------------------------------|----------|-------------|------------------------------------------------|-------------|------------------------------------------------|-------------------------------------------------|---------------|--------------|--------------|--------|------------------|-----|----------|----------|------|-------------|---------|----------------|---------|----------------------|
+| 0003ilHWJH7c5UtjKLPiC9             | Yamuna Nathi Karaiyil           | 12423    | 304170      | https://open.spotify.com/track/0003ilHWJH7c5UtjKLPiC9 | 9           | Rojavai Killathe (Original Motion Picture Soundtrack) | https://i.scdn.co/image/ab67616d0000b2736d2a3a6b1e23a9fee921401e | Tamil          | 0.43         | 0.765        | 0.676  | 0.00000191       | 1   | 0.272    | -9.427   | 1    | 0.045       | 133.554 | 4              | 0.895   | Yugendran            |
+| 0003ilHWJH7c5UtjKLPiC9             | Yamuna Nathi Karaiyil           | 12423    | 304170      | https://open.spotify.com/track/0003ilHWJH7c5UtjKLPiC9 | 9           | Rojavai Killathe (Original Motion Picture Soundtrack) | https://i.scdn.co/image/ab67616d0000b2736d2a3a6b1e23a9fee921401e | Tamil          | 0.43         | 0.765        | 0.676  | 0.00000191       | 1   | 0.272    | -9.427   | 1    | 0.045       | 133.554 | 4              | 0.895   | Harris Jayaraj       |
+| 0003ilHWJH7c5UtjKLPiC9             | Yamuna Nathi Karaiyil           | 12423    | 304170      | https://open.spotify.com/track/0003ilHWJH7c5UtjKLPiC9 | 9           | Rojavai Killathe (Original Motion Picture Soundtrack) | https://i.scdn.co/image/ab67616d0000b2736d2a3a6b1e23a9fee921401e | Tamil          | 0.43         | 0.765        | 0.676  | 0.00000191       | 1   | 0.272    | -9.427   | 1    | 0.045       | 133.554 | 4              | 0.895   | Poojan Sahil         |
+| 000MGC6RIiDr9psFHMmX0x             | Ujla Sa Jo Chand Pe             | 1254     | 405535      | https://open.spotify.com/track/000MGC6RIiDr9psFHMmX0x | 12          | Bas Ek Tamanna                                 | https://i.scdn.co/image/ab67616d0000b273ee82bdd8e18bd7c4f68883d8 | Hindi          | 0.245        | 0.352        | 0.591  | 0.0              | 3   | 0.0806   | -8.473   | 1    | 0.0811      | 70.549  | 1              | 0.296   | Raghu Ram            |
+| 001VMKfkHZrlyj7JlQbQFL             | Await The King's Justice        | 20485    | 120840      | https://open.spotify.com/track/001VMKfkHZrlyj7JlQbQFL | 5           | Game Of Thrones - Music From The HBO Series    | https://i.scdn.co/image/ab67616d0000b273239a1395e4d595efc28af924 | English        | 0.275        | 0.168        | 0.0354 | 0.929            | 9   | 0.205    | -25.34   | 0    | 0.0498      | 113.659 | 3              | 0.0301  | Unknown Artist       |
+| 002dozOGSO8AhuXoz7kDZT             | It's An Abstract                | 18590    | 147627      | https://open.spotify.com/track/002dozOGSO8AhuXoz7kDZT | 5           | Steve Jobs (Original Motion Picture Soundtrack)| https://i.scdn.co/image/ab67616d0000b27320ef46811d3c05195f7bff8e | English        | 0.937        | 0.559        | 0.0538 | 0.953            | 5   | 0.0983   | -26.238  | 1    | 0.0528      | 130.017 | 4              | 0.0344  | Unknown Artist       |
+| 003bJaa09EH1JkdJvudAVo             | You Are Next                    | 54       | 176412      | https://open.spotify.com/track/003bJaa09EH1JkdJvudAVo | 6           | 2.0 (Original Sound Track)                     | https://i.scdn.co/image/ab67616d0000b2733948e87d399c0ed5c0bc2326 | Unknown        | 0.0965       | 0.238        | 0.461  | 0.831            | 7   | 0.318    | -15.5    | 1    | 0.0826      | 117.961 | 3              | 0.0377  | V2 Vijay Vicky       |
+| 003G9lHqhSVntZmg5j5Eju             | Jeeva Nanna Jeeva               | 6078     | 283873      | https://open.spotify.com/track/003G9lHqhSVntZmg5j5Eju | 6           | Naayaka                                        | https://i.scdn.co/image/ab67616d0000b2736017cfff88bf2f56887578d8 | Unknown        | 0.447        | 0.722        | 0.553  | 0.000222         | 2   | 0.214    | -8.713    | 0    | 0.0274      | 116.004 | 4              | 0.44    | Abhay Jodhpurkar     |
+| 004HT1OpMxRDBnsD2Ro4gU             | Enna Aacho                      | 5915     | 296067      | https://open.spotify.com/track/004HT1OpMxRDBnsD2Ro4gU | 6           | Nee Ingu Sugame (Original Motion Picture Soundtrack) | https://i.scdn.co/image/ab67616d0000b273dc0f8b547581d4b040fab1b6 | Unknown        | 0.268        | 0.626        | 0.525  | 0.0              | 0   | 0.166    | -9.577    | 1    | 0.0609      | 84.729  | 4              | 0.439   | Vedanth              |
+| 004HT1OpMxRDBnsD2Ro4gU             | Enna Aacho                      | 5915     | 296067      | https://open.spotify.com/track/004HT1OpMxRDBnsD2Ro4gU | 6           | Nee Ingu Sugame (Original Motion Picture Soundtrack) | https://i.scdn.co/image/ab67616d0000b273dc0f8b547581d4b040fab1b6 | Unknown        | 0.268        | 0.626        | 0.525  | 0.0              | 0   | 0.166    | -9.577    | 1    | 0.0609      | 84.729  | 4              | 0.439   | Waterbed             |
 ---
 ![Mindmap](https://i.ibb.co/PNfWpB5/photo-2024-12-30-10-34-52.jpg)
 ## Заключение
